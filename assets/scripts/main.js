@@ -45,15 +45,29 @@ function initializeServiceWorker() {
   // We first must register our ServiceWorker here before any of the code in
   // sw.js is executed.
   // B1. TODO - Check if 'serviceWorker' is supported in the current browser
-  // B2. TODO - Listen for the 'load' event on the window object.
-  // Steps B3-B6 will be *inside* the event listener's function created in B2
-  // B3. TODO - Register './sw.js' as a service worker (The MDN article
-  //            "Using Service Workers" will help you here)
-  // B4. TODO - Once the service worker has been successfully registered, console
-  //            log that it was successful.
-  // B5. TODO - In the event that the service worker registration fails, console
-  //            log that it has failed.
-  // STEPS B6 ONWARDS WILL BE IN /sw.js
+  if ('serviceWorker' in navigator) {
+    // B2. TODO - Listen for the 'load' event on the window object.
+    // Steps B3-B6 will be *inside* the event listener's function created in B2
+    window.addEventListener('load', () => {
+      // B3. TODO - Register './sw.js' as a service worker (The MDN article
+      //            "Using Service Workers" will help you here)
+      navigator.serviceWorker.register('./sw.js').then(
+        // B4. TODO - Once the service worker has been successfully registered, console
+        //            log that it was successful.
+        (registration) => {
+          console.log('Serivceworker registration succedded', registration);
+        },
+        // B5. TODO - In the event that the service worker registration fails, console
+        //            log that it has failed.
+        (error) => {
+          console.error('Serivceworker registration failed', error);
+        }
+      );
+      // STEPS B6 ONWARDS WILL BE IN /sw.js
+    });
+  } else {
+          console.error('Serivceworker not supported');
+  }
 }
 
 /**
@@ -69,8 +83,8 @@ async function getRecipes() {
   // A1. TODO - Check local storage to see if there are any recipes.
   //            If there are recipes, return them.
   const recipes = JSON.parse(localStorage.getItem('recipes'));
-  if (recipes.length > 0) {
-    //return recipes;
+  if (!(recipes == null) && recipes.length > 0) {
+    return recipes;
   }
   /**************************/
   // The rest of this method will be concerned with requesting the recipes
